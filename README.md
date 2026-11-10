@@ -39,13 +39,21 @@ pickup time would drag the median down and hide the problem.
 
 ```bash
 make install     # virtualenv + npm install
-make dev         # API on :8000, secrets read from 1Password
-make web         # frontend on :5173
+
+make dev         # terminal 1: API on :8000
+make web         # terminal 2: frontend on :5173
 ```
 
-`make dev` leaves `DEMO_MODE=true`, which seeds four repositories of realistic
-delivery data on first boot. Nothing needs GitHub credentials to explore the
-product.
+Then open http://localhost:5173.
+
+No database server is needed. `make dev` runs on a local SQLite file and leaves
+`DEMO_MODE=true`, which seeds four repositories of realistic delivery data on
+first boot, so there is nothing to install and no GitHub credentials to supply.
+
+It reads `OPENROUTER_API_KEY` from 1Password if the `op` CLI is available. If it
+is not, the API still starts and everything works except the recommendations,
+which say the key is missing. To use Postgres instead, set
+`DATABASE_URL_OVERRIDE` or fill in the `POSTGRES_*` variables.
 
 Prefer Docker:
 

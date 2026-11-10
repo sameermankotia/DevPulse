@@ -29,3 +29,6 @@ dist/
 .claude/
 .agents/
 skills-lock.json
+
+# Local SQLite database created by scripts/dev.sh
+devpulse-local.db
