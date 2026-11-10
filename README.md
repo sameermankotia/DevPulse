@@ -140,6 +140,42 @@ output rather than empty-set behaviour.
 
 ## Deployment
 
+### Free hosting: Vercel + Render
+
+The frontend is static and the API runs on SQLite against an ephemeral disk, so
+this costs nothing and nothing expires. `DEMO_MODE` re-seeds the identical
+dataset from `DEMO_SEED` whenever the instance restarts, which is why the free
+Postgres add-on — deleted after 30 days — is not needed.
+
+**Render (API).** New → Blueprint, point it at this repository. `render.yaml`
+defines the service. Set `OPENROUTER_API_KEY` in the dashboard when prompted;
+it is marked `sync: false` so it never lives in the repository. Note the
+assigned URL, e.g. `https://devpulse-api.onrender.com`.
+
+**Vercel (frontend).** Import the repository, set **Root Directory** to
+`frontend`, and add one environment variable:
+
+```
+VITE_API_BASE_URL = https://<your-render-service>.onrender.com/api/v1
+```
+
+**Close the loop.** Set `CORS_ORIGINS` on Render to the Vercel URL. Preview
+deployments are already covered by `CORS_ORIGIN_REGEX`.
+
+Calls go from the browser straight to Render rather than through Vercel, because
+generating a recommendation takes longer than Vercel's edge proxy allows.
+
+Two things to expect on the free tier: the API sleeps after 15 minutes idle, so
+the first request takes roughly a minute to wake it — the UI says so rather than
+appearing to hang — and because the disk is ephemeral, the recommendation cache
+resets on restart.
+
+To track real repositories instead of the demo set, add a Render Postgres
+instance, remove `DATABASE_URL_OVERRIDE`, and set `DEMO_MODE=false`. The
+entrypoint runs Alembic migrations whenever the database is not SQLite.
+
+### Kubernetes
+
 ```bash
 kubectl apply -f deploy/k8s/
 ```

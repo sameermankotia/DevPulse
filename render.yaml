@@ -1,0 +1,48 @@
+# Render blueprint for the free demo deployment.
+#
+# Runs the API on SQLite against Render's ephemeral disk. Nothing here expires,
+# because DEMO_MODE re-seeds the dataset deterministically whenever the instance
+# restarts -- the free Postgres add-on, which Render deletes after 30 days, is
+# not needed for a demo.
+#
+# To track real repositories instead, add a Postgres instance, drop
+# DATABASE_URL_OVERRIDE so the POSTGRES_* settings take over, and set
+# DEMO_MODE=false. The entrypoint then runs Alembic migrations on deploy.
+services:
+  - type: web
+    name: devpulse-api
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+
+      # Demo dataset on an ephemeral file. A restart wipes it and the seeder
+      # rebuilds the identical dataset from DEMO_SEED.
+      - key: DEMO_MODE
+        value: 'true'
+      - key: DATABASE_URL_OVERRIDE
+        value: sqlite+aiosqlite:////srv/devpulse.db
+
+      # The deployed frontend's own origin. Replace once Vercel assigns it.
+      - key: CORS_ORIGINS
+        value: https://devpulse.vercel.app
+      # Lets Vercel preview deployments through without listing each hostname.
+      - key: CORS_ORIGIN_REGEX
+        value: https://.*\.vercel\.app
+
+      - key: OPENROUTER_MODEL
+        value: anthropic/claude-opus-4.8
+      # Set in the Render dashboard, never in this file.
+      - key: OPENROUTER_API_KEY
+        sync: false
+      # Optional. Only needed to sync real repositories.
+      - key: GITHUB_TOKEN
+        sync: false

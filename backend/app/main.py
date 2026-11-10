@@ -20,9 +20,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     settings = get_settings()
 
-    # create_all is enough for local and demo use; Alembic owns deployed schemas.
-    async with get_engine().begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
+    # Alembic owns the Postgres schema. SQLite has no migration path here --
+    # the insights payload is a JSONB column, which Alembic cannot emit for it
+    # -- so SQLite builds its schema directly. Doing both on Postgres would
+    # leave tables Alembic never stamped, and the next migration would fail on
+    # objects that already exist.
+    if settings.database_url.startswith("sqlite"):
+        async with get_engine().begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
 
     if settings.demo_mode:
         async with get_session_factory()() as session:
@@ -57,6 +62,7 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
+        allow_origin_regex=settings.cors_origin_regex,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

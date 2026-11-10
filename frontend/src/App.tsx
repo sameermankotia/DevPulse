@@ -10,6 +10,7 @@ import {
   useRepositories,
   useSnapshot,
 } from '@/hooks/useDelivery'
+import { useSlowRequest } from '@/hooks/useSlowRequest'
 import { Dashboard } from '@/scenes/Dashboard'
 import { Hero } from '@/scenes/Hero'
 import './App.css'
@@ -34,6 +35,7 @@ export default function App() {
   }, [repositories.data, repositoryId])
 
   const connectionError = errorMessage(repositories.error ?? snapshot.error)
+  const wakingUp = useSlowRequest(!snapshot.data && !connectionError)
 
   if (connectionError) {
     return (
@@ -54,6 +56,12 @@ export default function App() {
       <main className="state" aria-busy="true">
         <div className="shell state__inner">
           <p className="state__loading">Loading delivery data…</p>
+          {wakingUp && (
+            <p className="state__hint">
+              The API sleeps when idle, so the first request after a quiet spell takes about a
+              minute to wake it. Later ones are immediate.
+            </p>
+          )}
         </div>
       </main>
     )
