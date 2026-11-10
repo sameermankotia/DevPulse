@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: devpulse
+      POSTGRES_PASSWORD: devpulse
+      POSTGRES_DB: devpulse
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U devpulse']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: local
+      POSTGRES_HOST: db
+      POSTGRES_USER: devpulse
+      POSTGRES_PASSWORD: devpulse
+      POSTGRES_DB: devpulse
+      DEMO_MODE: ${DEMO_MODE:-true}
+      CORS_ORIGINS: http://localhost:5173,http://localhost:8080
+      # Passed through from the host shell; see scripts/dev.sh.
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-anthropic/claude-opus-4.8}
+    ports:
+      - '8000:8000'
+
+  web:
+    build: ./frontend
+    depends_on:
+      - api
+    ports:
+      - '8080:8080'
+
+volumes:
+  pgdata:

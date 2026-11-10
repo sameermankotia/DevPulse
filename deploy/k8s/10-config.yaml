@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devpulse-config
+  namespace: devpulse
+data:
+  ENVIRONMENT: production
+  LOG_LEVEL: INFO
+  DEMO_MODE: 'false'
+  POSTGRES_HOST: devpulse-postgres
+  POSTGRES_PORT: '5432'
+  POSTGRES_DB: devpulse
+  OPENROUTER_MODEL: anthropic/claude-opus-4.8
+  GITHUB_BACKFILL_DAYS: '120'
+  CORS_ORIGINS: https://devpulse.example.com
+---
+# Created out of band, never from this file. With the 1Password Kubernetes
+# operator installed, replace this with a OnePasswordItem that syncs the same
+# keys from op://OCR-Eval-Dashboard/dashboard-secrets.
+#
+#   kubectl create secret generic devpulse-secrets -n devpulse \
+#     --from-literal=POSTGRES_USER=devpulse \
+#     --from-literal=POSTGRES_PASSWORD="$(openssl rand -base64 24)" \
+#     --from-literal=GITHUB_TOKEN="$GITHUB_TOKEN" \
+#     --from-literal=OPENROUTER_API_KEY="$(op read 'op://OCR-Eval-Dashboard/dashboard-secrets/OPENROUTER_API_KEY')"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: devpulse-secrets
+  namespace: devpulse
+type: Opaque
+stringData:
+  POSTGRES_USER: devpulse
+  POSTGRES_PASSWORD: replace-me
+  GITHUB_TOKEN: ''
+  OPENROUTER_API_KEY: ''

@@ -1,0 +1,216 @@
+.insights {
+  padding: var(--space-6);
+  background: var(--surface-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-l);
+}
+
+.insights__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.insights__title {
+  font-size: var(--text-title);
+  font-weight: 600;
+  letter-spacing: var(--tracking-title);
+}
+
+.insights__subtitle {
+  margin-top: var(--space-1);
+  font-size: var(--text-footnote);
+  color: var(--content-tertiary);
+}
+
+.insights__action {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--content-primary);
+  color: var(--surface);
+  font-size: var(--text-callout);
+  font-weight: 500;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.insights__action:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.insights__action:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.insights__action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.insights__notice {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-m);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  font-size: var(--text-footnote);
+  color: var(--content-secondary);
+}
+
+.insights__notice[data-tone='error'] {
+  border-color: var(--friction);
+  color: var(--content-primary);
+}
+
+.insights__notice code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--content-primary);
+}
+
+.insights__loading,
+.insights__empty {
+  margin-top: var(--space-5);
+  font-size: var(--text-callout);
+  color: var(--content-secondary);
+}
+
+.insights__headline {
+  margin-top: var(--space-5);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-title);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+.insights__summary {
+  margin-top: var(--space-3);
+  color: var(--content-secondary);
+  font-size: var(--text-callout);
+  max-width: 72ch;
+}
+
+.insights__list {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--space-6);
+  display: grid;
+  gap: var(--space-5);
+}
+
+.recommendation {
+  display: flex;
+  gap: var(--space-4);
+}
+
+/* The ranking is a real sequence -- most to least worth doing -- so a numeral
+   is information here rather than decoration. */
+.recommendation__rank {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-strong);
+  font-size: var(--text-caption);
+  font-family: var(--font-mono);
+  color: var(--content-secondary);
+}
+
+.recommendation__body {
+  min-width: 0;
+}
+
+.recommendation__title {
+  font-size: var(--text-headline);
+  font-weight: 600;
+  letter-spacing: var(--tracking-title);
+}
+
+.recommendation__meta {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--text-caption);
+  color: var(--content-tertiary);
+  text-transform: lowercase;
+}
+
+.recommendation__meta [data-impact='high'] {
+  color: var(--content-primary);
+  font-weight: 600;
+}
+
+.recommendation__rationale {
+  margin-top: var(--space-3);
+  font-size: var(--text-callout);
+  color: var(--content-secondary);
+  max-width: 70ch;
+}
+
+.recommendation__effect {
+  margin-top: var(--space-2);
+  font-size: var(--text-callout);
+  max-width: 70ch;
+}
+
+.recommendation__ai {
+  margin-top: var(--space-3);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--hairline-strong);
+  font-size: var(--text-footnote);
+  color: var(--content-secondary);
+  max-width: 70ch;
+}
+
+.recommendation__ai[data-applies='true'] {
+  border-left-color: var(--flow);
+}
+
+.recommendation__ai-label {
+  display: block;
+  font-weight: 600;
+  color: var(--content-primary);
+  margin-bottom: 2px;
+}
+
+.insights__risks {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--hairline);
+}
+
+.insights__risks-title {
+  font-size: var(--text-footnote);
+  font-weight: 600;
+  color: var(--content-secondary);
+}
+
+.insights__risks ul {
+  margin-top: var(--space-2);
+  padding-left: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--text-footnote);
+  color: var(--content-tertiary);
+  max-width: 76ch;
+}
+
+@media (max-width: 47.9375rem) {
+  .insights {
+    padding: var(--space-4);
+  }
+
+  .insights__action {
+    width: 100%;
+  }
+}

@@ -1,0 +1,128 @@
+.prs__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.prs__sort-label {
+  font-size: var(--text-footnote);
+  color: var(--content-tertiary);
+}
+
+.prs__sort {
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  background: var(--surface-elevated);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-s);
+  font-size: var(--text-footnote);
+}
+
+.prs__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-footnote);
+}
+
+.prs__table th,
+.prs__table td {
+  text-align: left;
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: middle;
+}
+
+.prs__table thead th {
+  font-weight: 500;
+  color: var(--content-tertiary);
+  font-size: var(--text-caption);
+  border-bottom-color: var(--hairline-strong);
+  position: sticky;
+  top: var(--header-height);
+  background: var(--surface);
+  z-index: 1;
+}
+
+.prs__numeric {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.prs__title {
+  font-weight: 400;
+  max-width: 32rem;
+}
+
+.prs__number {
+  font-family: var(--font-mono);
+  color: var(--content-tertiary);
+  margin-right: var(--space-2);
+}
+
+.prs__headline {
+  color: var(--content-primary);
+}
+
+.prs__author {
+  color: var(--content-secondary);
+  white-space: nowrap;
+}
+
+.prs__breakdown-head {
+  width: 30%;
+  min-width: 10rem;
+}
+
+/* The row bar is the lifecycle track at small scale: same encoding, same
+   meaning, with a 2px surface gap so adjacent segments stay separable. */
+.prs__bar {
+  display: flex;
+  height: 8px;
+  gap: 2px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.prs__segment {
+  background: var(--flow);
+  min-width: 2px;
+}
+
+.prs__segment[data-queue='true'] {
+  background: var(--friction);
+}
+
+.prs__pending {
+  color: var(--content-tertiary);
+}
+
+.prs__empty {
+  color: var(--content-secondary);
+  font-size: var(--text-callout);
+}
+
+/* The breakdown column is the first to go when space runs out; the numbers
+   that drive decisions stay. */
+@media (max-width: 61.9375rem) {
+  .prs__breakdown-head,
+  .prs__table td:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  .prs__author {
+    display: none;
+  }
+
+  .prs__table thead th:nth-child(2) {
+    display: none;
+  }
+
+  .prs__title {
+    max-width: 18rem;
+  }
+}

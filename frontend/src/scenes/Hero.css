@@ -1,0 +1,122 @@
+.hero {
+  /* Two and a half viewports give the scene room to draw and resolve. */
+  height: 250vh;
+  position: relative;
+}
+
+.hero__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-block: var(--header-height) var(--space-6);
+}
+
+.hero__inner {
+  display: grid;
+  gap: clamp(var(--space-5), 4vh, var(--space-7));
+  align-content: center;
+  width: 100%;
+  max-height: 100%;
+}
+
+.hero__headline {
+  max-width: 100%;
+}
+
+.hero__title {
+  max-width: 16ch;
+  font-size: var(--text-display-1);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+  text-wrap: balance;
+}
+
+.hero__lede {
+  margin-top: var(--space-4);
+  max-width: 46ch;
+  font-size: var(--text-body);
+  color: var(--content-secondary);
+}
+
+.hero__track-caption {
+  font-size: var(--text-footnote);
+  color: var(--content-tertiary);
+  margin-bottom: var(--space-3);
+}
+
+.hero__verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.hero__verdict-line {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 52ch;
+  color: var(--content-secondary);
+  font-size: var(--text-callout);
+}
+
+.hero__verdict-figure {
+  font-size: var(--text-display-2);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+  color: var(--content-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__cta {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--content-primary);
+  color: var(--surface);
+  font-size: var(--text-callout);
+  font-weight: 500;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+.hero__cta:hover {
+  opacity: 0.88;
+}
+
+.hero__cta:active {
+  transform: scale(0.97);
+}
+
+/* The sticky scene needs a real viewport. On short or reduced-motion screens
+   it collapses to a single static panel instead. */
+@media (max-height: 34rem), (prefers-reduced-motion: reduce) {
+  .hero {
+    height: auto;
+  }
+
+  .hero__sticky {
+    position: static;
+    height: auto;
+    padding-block: var(--space-9);
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  .hero__inner {
+    gap: var(--space-6);
+  }
+
+  .hero__verdict {
+    align-items: flex-start;
+  }
+}

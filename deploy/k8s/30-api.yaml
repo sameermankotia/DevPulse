@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devpulse-api
+  namespace: devpulse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devpulse
+      app.kubernetes.io/component: api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devpulse
+        app.kubernetes.io/component: api
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      # Schema changes land before any new pod serves traffic.
+      initContainers:
+        - name: migrate
+          image: ghcr.io/sameermankotia/devpulse-api:latest
+          command: ['alembic', 'upgrade', 'head']
+          envFrom:
+            - configMapRef: { name: devpulse-config }
+            - secretRef: { name: devpulse-secrets }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ['ALL'] }
+      containers:
+        - name: api
+          image: ghcr.io/sameermankotia/devpulse-api:latest
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef: { name: devpulse-config }
+            - secretRef: { name: devpulse-secrets }
+          readinessProbe:
+            httpGet: { path: /api/v1/health, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /api/v1/health, port: http }
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          # Generating a recommendation can take a minute; a slow start must
+          # not be mistaken for a dead pod.
+          startupProbe:
+            httpGet: { path: /api/v1/health, port: http }
+            failureThreshold: 30
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: '1', memory: 1Gi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ['ALL'] }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devpulse-api
+  namespace: devpulse
+spec:
+  selector:
+    app.kubernetes.io/name: devpulse
+    app.kubernetes.io/component: api
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: devpulse-api
+  namespace: devpulse
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: devpulse-api
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: devpulse-api
+  namespace: devpulse
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devpulse
+      app.kubernetes.io/component: api

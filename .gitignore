@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Secrets and local state
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite3
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+
+# Local agent/skill tooling, not part of the project
+.claude/
+.agents/
+skills-lock.json

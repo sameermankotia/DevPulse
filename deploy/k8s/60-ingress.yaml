@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devpulse
+  namespace: devpulse
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [devpulse.example.com]
+      secretName: devpulse-tls
+  rules:
+    - host: devpulse.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: devpulse-api
+                port:
+                  name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: devpulse-web
+                port:
+                  name: http

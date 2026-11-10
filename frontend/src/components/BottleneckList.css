@@ -1,0 +1,105 @@
+.bottlenecks {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: var(--space-4);
+}
+
+.bottleneck {
+  padding: var(--space-5);
+  background: var(--surface-elevated);
+  border: 1px solid var(--hairline);
+  /* Severity is carried by a leading rule as well as by colour, so the ranking
+     survives greyscale and forced-colors. */
+  border-left: 3px solid var(--content-tertiary);
+  border-radius: var(--radius-m);
+}
+
+.bottleneck[data-severity='critical'] {
+  border-left-color: var(--friction);
+}
+
+.bottleneck[data-severity='elevated'] {
+  border-left-color: var(--pending);
+}
+
+.bottleneck__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.bottleneck__title {
+  font-size: var(--text-headline);
+  font-weight: 600;
+  letter-spacing: var(--tracking-title);
+}
+
+.bottleneck__tag {
+  flex-shrink: 0;
+  font-size: var(--text-caption);
+  color: var(--content-tertiary);
+}
+
+.bottleneck__figure {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+}
+
+.bottleneck__figure-unit {
+  font-size: var(--text-footnote);
+  font-weight: 400;
+  color: var(--content-tertiary);
+  letter-spacing: 0;
+}
+
+.bottleneck__facts {
+  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: var(--space-3);
+}
+
+.bottleneck__facts dt {
+  font-size: var(--text-caption);
+  color: var(--content-tertiary);
+}
+
+.bottleneck__facts dd {
+  margin: 2px 0 0;
+  font-size: var(--text-callout);
+  font-family: var(--font-mono);
+}
+
+.bottleneck__evidence {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--hairline);
+  font-size: var(--text-footnote);
+  color: var(--content-secondary);
+}
+
+.bottlenecks__clear {
+  padding: var(--space-6);
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--radius-m);
+}
+
+.bottlenecks__clear-title {
+  font-size: var(--text-headline);
+  font-weight: 600;
+}
+
+.bottlenecks__clear-body {
+  margin-top: var(--space-2);
+  color: var(--content-secondary);
+  font-size: var(--text-callout);
+  max-width: 48ch;
+}

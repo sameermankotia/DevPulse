@@ -1,0 +1,93 @@
+.metric {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5);
+  background: var(--surface-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-l);
+}
+
+.metric__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 2.5em;
+}
+
+.metric__label {
+  font-size: var(--text-footnote);
+  font-weight: 500;
+  color: var(--content-secondary);
+  letter-spacing: 0;
+}
+
+/* The band chip is an outline, not a fill: it reports a state, it is not a
+   control, and a solid pill would read as a button. */
+.metric__band {
+  flex-shrink: 0;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid currentColor;
+}
+
+.metric__band[data-band='elite'],
+.metric__band[data-band='high'] {
+  color: var(--flow);
+}
+
+.metric__band[data-band='medium'] {
+  color: var(--pending);
+}
+
+.metric__band[data-band='low'] {
+  color: var(--friction);
+}
+
+.metric__value {
+  margin-top: var(--space-4);
+  font-size: var(--text-display-2);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+.metric__unit {
+  margin-top: var(--space-1);
+  font-size: var(--text-footnote);
+  color: var(--content-tertiary);
+}
+
+.metric__trend {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-footnote);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric__trend[data-sentiment='good'] {
+  color: var(--flow);
+}
+
+.metric__trend[data-sentiment='bad'] {
+  color: var(--friction);
+}
+
+.metric__trend[data-sentiment='neutral'] {
+  color: var(--content-tertiary);
+}
+
+.metric__trend-context {
+  color: var(--content-tertiary);
+}
+
+.metric__footer {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  font-size: var(--text-caption);
+  color: var(--content-tertiary);
+}
