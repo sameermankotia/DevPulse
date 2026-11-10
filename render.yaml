@@ -14,10 +14,18 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    rootDir: backend
-    dockerfilePath: ./Dockerfile
+    # Both paths are resolved from the repository root, not from rootDir, so
+    # they carry the backend/ prefix. dockerContext is what the Dockerfile's
+    # own COPY lines are relative to.
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     healthCheckPath: /api/v1/health
     autoDeploy: true
+    # Frontend-only commits should not rebuild or restart the API.
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
     envVars:
       - key: ENVIRONMENT
         value: production
