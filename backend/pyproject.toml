@@ -19,13 +19,15 @@ dependencies = [
     "structlog>=24.4.0",
     "tenacity>=9.0.0",
     "python-dateutil>=2.9.0",
+    # SQLite driver. Needed at runtime, not just in tests: the demo
+    # deployment runs on SQLite rather than Postgres.
+    "aiosqlite>=0.20.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
-    "aiosqlite>=0.20.0",
     "ruff>=0.8.0",
     "mypy>=1.13.0",
 ]

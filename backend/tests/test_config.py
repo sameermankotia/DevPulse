@@ -42,7 +42,12 @@ def test_cors_origins_defaults_to_the_dev_server():
         # asyncpg rejects libpq-only parameters outright.
         ("postgresql://u:p@h/db?sslmode=require", "postgresql+asyncpg://u:p@h/db"),
         ("postgresql+asyncpg://u:p@h/db", "postgresql+asyncpg://u:p@h/db"),
-        ("sqlite+aiosqlite:////tmp/x.db", "sqlite+aiosqlite:////tmp/x.db"),
+        # SQLite must come back byte-identical. Round-tripping it through
+        # urlunsplit collapses the triple slash into something SQLAlchemy
+        # cannot parse, which only shows up on a relative path.
+        ("sqlite+aiosqlite:////srv/devpulse.db", "sqlite+aiosqlite:////srv/devpulse.db"),
+        ("sqlite+aiosqlite:///./devpulse.db", "sqlite+aiosqlite:///./devpulse.db"),
+        ("sqlite+aiosqlite:///:memory:", "sqlite+aiosqlite:///:memory:"),
     ],
 )
 def test_platform_dsns_are_normalised_for_asyncpg(given, expected):
@@ -52,3 +57,20 @@ def test_platform_dsns_are_normalised_for_asyncpg(given, expected):
 def test_database_url_override_is_normalised(monkeypatch):
     monkeypatch.setenv("DATABASE_URL_OVERRIDE", "postgres://u:p@h:5432/db")
     assert Settings().database_url == "postgresql+asyncpg://u:p@h:5432/db"
+
+
+@pytest.mark.parametrize(
+    "dsn",
+    [
+        "sqlite+aiosqlite:///./devpulse.db",
+        "sqlite+aiosqlite:////srv/devpulse.db",
+        "postgres://u:p@h:5432/db",
+    ],
+)
+def test_normalised_dsn_is_parseable_by_sqlalchemy(dsn, monkeypatch):
+    """The container boots straight into create_async_engine, so an unparseable
+    URL takes the whole process down at startup rather than failing a query."""
+    from sqlalchemy.engine.url import make_url
+
+    monkeypatch.setenv("DATABASE_URL_OVERRIDE", dsn)
+    make_url(Settings().database_url)

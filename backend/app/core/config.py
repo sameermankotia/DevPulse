@@ -14,13 +14,18 @@ def normalise_async_dsn(dsn: str) -> str:
 
     Render, Heroku and Fly all hand out `postgres://` or `postgresql://`, which
     SQLAlchemy routes to psycopg. They also append libpq-only parameters such as
-    `sslmode`, which asyncpg rejects outright, so those are dropped here.
-    """
-    parts = urlsplit(dsn)
-    if parts.scheme in ("postgres", "postgresql"):
-        parts = parts._replace(scheme="postgresql+asyncpg")
+    `sslmode`, which asyncpg rejects outright.
 
-    if parts.scheme.startswith("postgresql+asyncpg") and parts.query:
+    Only Postgres URLs are touched. Anything else is returned exactly as given,
+    because round-tripping through urlunsplit collapses SQLite's triple slash
+    (`sqlite:///./app.db` becomes the unparseable `sqlite:/./app.db`).
+    """
+    scheme = urlsplit(dsn).scheme
+    if scheme not in ("postgres", "postgresql"):
+        return dsn
+
+    parts = urlsplit(dsn)._replace(scheme="postgresql+asyncpg")
+    if parts.query:
         kept = [
             pair
             for pair in parts.query.split("&")
